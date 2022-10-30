@@ -14,7 +14,7 @@
     <label for="blur">Blur:</label>
     <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
 
-    <label for="base">Base Color</label>
+    <label for="base">Base Color:</label>
     <input id="base" type="color" name="base" value="#ffc600">
   </div>
 
@@ -45,6 +45,24 @@
   </style>
 
   <script>
+    
+    function updateChanges() {
+      const imageElement = document.querySelector('img');
+      const spacing = document.getElementById('spacing');
+      const borderColor = document.getElementById('base');
+      const blur = document.getElementById('blur');
+      const borderSize = `${spacing.value}${spacing.dataset.sizing}`;
+      const blurSize = `${blur.value}${blur.dataset.sizing}`;
+      imageElement.style.border = `${borderSize} solid ${borderColor.value}`;
+      imageElement.style.filter = `blur(${blurSize})`;
+    }
+
+    document.getElementById('spacing').onchange = updateChanges;
+    document.getElementById('blur').onchange = updateChanges;
+    document.getElementById('base').onchange = updateChanges;
+    
+    updateChanges();
+
   </script>
 
 </body>
