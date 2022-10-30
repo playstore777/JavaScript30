@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>JS + CSS Clock</title>
 </head>
+
 <body>
 
 
-    <div class="clock">
-      <div class="clock-face">
-        <div class="hand hour-hand"></div>
-        <div class="hand min-hand"></div>
-        <div class="hand second-hand"></div>
-      </div>
+  <div class="clock">
+    <div class="clock-face">
+      <div class="hand hour-hand"></div>
+      <div class="hand second-hand"></div>
+      <div class="hand min-hand"></div>
     </div>
+  </div>
 
 
   <style>
@@ -43,17 +45,18 @@
       position: relative;
       padding: 2rem;
       box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
+        0 0 0 4px rgba(0, 0, 0, 0.1),
         inset 0 0 0 3px #EFEFEF,
         inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
+        0 0 10px rgba(0, 0, 0, 0.2);
     }
 
     .clock-face {
       position: relative;
       width: 100%;
       height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
+      transform: translateY(-3px);
+      /* account for the height of the clock hands */
     }
 
     .hand {
@@ -63,12 +66,38 @@
       position: absolute;
       top: 50%;
     }
-
   </style>
 
   <script>
+    const clockFace = document.querySelector('.clock-face');
+    const secondHand = document.querySelector('.hand.second-hand');
+    const minHand = document.querySelector('.hand.min-hand');
+    const hourHand = document.querySelector('.hand.hour-hand');
+
+    clockFace.setAttribute('style', 'transform: rotate(90deg)'); // to start from the top (0deg).
+
+    setInterval(() => {
+      const dateTime = new Date();
+      hourHandAngle = dateTime.getHours();
+      secondHandAngle = dateTime.getSeconds();
+      minHandAngle = dateTime.getMinutes();
+      secondHand.setAttribute('style', `transform: rotate(${6 * secondHandAngle}deg); transform-origin: right center`);
+      minHand.setAttribute('style', `width: 35%; left: 15%; transform: rotate(${6 * minHandAngle}deg); transform-origin: right center`);
+      hourHand.setAttribute('style', `transform: rotate(${30 * hourHandAngle}deg); transform-origin: right center`);
+    }, 1000);
+
+    /***
+     * Why I multiplied with 6 & 30?
+     * We have 360 degs in a circle. And we wanted to turn our 60 seconds into 360 degs.
+     * So, dividing 360 by 60 gives 6, which means multiplying 6 to 60 seconds gives us 360!
+     * Same goes for Minute!
+     * But for hours if we divide 12 by 360 then we get 30, so we using 30 for that.
+     * NOTE: I did not use google for this, just some previous experience(not much, just knew we can multiply etc).
+     * I did use google to know how to rotate etc as such.
+    */
 
 
   </script>
 </body>
+
 </html>
