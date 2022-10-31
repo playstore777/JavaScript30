@@ -22,6 +22,18 @@
 
   <style>
 
+    :root{
+      --spacing: 10px;
+      --base: #ffc600;
+      --blur: 10px;
+    }
+
+    img{
+      padding: var(--spacing);
+      background-color: var(--base);
+      filter: blur(var(--blur));
+    }
+
     /*
       misc styles, nothing to do with CSS variables
     */
@@ -45,24 +57,14 @@
   </style>
 
   <script>
-    
-    function updateChanges() {
-      const imageElement = document.querySelector('img');
-      const spacing = document.getElementById('spacing');
-      const borderColor = document.getElementById('base');
-      const blur = document.getElementById('blur');
-      const borderSize = `${spacing.value}${spacing.dataset.sizing}`;
-      const blurSize = `${blur.value}${blur.dataset.sizing}`;
-      imageElement.style.border = `${borderSize} solid ${borderColor.value}`;
-      imageElement.style.filter = `blur(${blurSize})`;
+    const inputs = document.querySelectorAll('.controls input');
+
+    function updateChanges () {
+      const suffix = this.dataset.sizing || '';
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
     }
 
-    document.getElementById('spacing').onchange = updateChanges;
-    document.getElementById('blur').onchange = updateChanges;
-    document.getElementById('base').onchange = updateChanges;
-    
-    updateChanges();
-
+    inputs.forEach(element => element.addEventListener('change', updateChanges));
   </script>
 
 </body>
