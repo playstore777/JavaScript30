@@ -1,22 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Type Ahead 👀</title>
-  <link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8">
+	<title>Type Ahead 👀</title>
+	<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+	<form class="search-form">
+		<input type="text" class="search" placeholder="City or State">
+		<ul class="suggestions">
+			<li>Filter for a city</li>
+			<li>or a state</li>
+		</ul>
+	</form>
+	<script>
+		const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+		const response = fetch(endpoint).then(res => res.json());
+		let responseData = [];
+		const suggestions = document.querySelector('.suggestions');
+		const input = document.querySelector('.search');
+		let valueToSearch = '';
+		let delayTimer;
+		let searchedData = [
+		];
 
-  <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
-      <li>Filter for a city</li>
-      <li>or a state</li>
-    </ul>
-  </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+		response.then(element => responseData = element);
+		// console.log(input.value);
+		input.addEventListener('keyup', (e) => {
+			valueToSearch = e.target.value;
+			searchInput();
+			createList();
+			// console.log('Searched Data: ', searchedData.length);
+			// console.log('Value To Search: ', valueToSearch);
+		});
 
-</script>
+		const searchInput = () => {
+			searchedData = Array.from(responseData).filter(obj =>
+				obj.state.toLowerCase().includes(valueToSearch.toLowerCase())
+				|| obj.city.toLowerCase().includes(valueToSearch.toLowerCase()));
+		}
+
+		const createList = () => {
+			suggestions.innerHTML = '';
+			searchedData.forEach(data => {
+				const li = document.createElement('li');
+				// console.log(highlightMatch(data.city), ', ', highlightMatch(data.state));
+				console.log('city, state: ', highlightMatch(data.state), data.state);
+				if (valueToSearch) {
+					const liName = `<span class='name'>${highlightMatch(data.city)}, ${highlightMatch(data.state)}</span>`;
+					const liPopulation = `<span class='population'>${data.population}</span>`;
+					const liText = liName + liPopulation;
+					li.innerHTML = liText;
+				}else {
+					const liName = `<span class='name'>${data.city}, ${data.state}</span>`;
+					const liPopulation = `<span class='population'>${data.population}</span>`;
+					const liText = liName + liPopulation;
+					li.innerHTML = liText;
+				}
+				suggestions.appendChild(li);
+			});
+		}
+
+		const highlightMatch = (text) => {
+			let highlightedText = '';
+			let highlight = '';
+			if (text.toLowerCase().includes(valueToSearch.toLowerCase())) {
+				for (let letter of text) {
+					// console.log('Highlighted Text: ', letter, highlightedText);
+					if (valueToSearch.toLowerCase().includes(letter.toLowerCase())) {
+						highlight += letter;
+						if (highlight.toLowerCase() === valueToSearch.toLowerCase()) {
+								highlightedText += `<span class="hl">${highlight}</span>`;
+								highlight = '';
+							}
+					}else{
+						console.log('Highlight: ', highlight);
+						if (highlight.toLowerCase() === valueToSearch.toLowerCase()) {
+							highlightedText += `<span class="hl">${highlight}</span>`;
+						}else{
+							highlightedText += highlight;
+						}
+						highlight = '';
+						highlightedText += letter;
+					}
+				}
+			}else{
+				highlightedText = text;
+			}
+			// console.log('highlightMatch: ', highlightedText);
+			return highlightedText;
+		}
+	</script>
 </body>
+
 </html>
